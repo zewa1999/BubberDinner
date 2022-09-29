@@ -1,10 +1,10 @@
-﻿using BubberDinner.Application.Common.Interfaces.Authentication;
-using BuberDinner.Application.Common.Errors;
+﻿using BuberDinner.Application.Common.Interfaces.Authentication;
 using BuberDinner.Application.Common.Interfaces.Persistence;
+using BuberDinner.Domain.Common.Errors;
 using BuberDinner.Domain.Entities;
-using FluentResults;
+using ErrorOr;
 
-namespace BubberDinner.Application.Services.Authentication;
+namespace BuberDinner.Application.Services.Authentication;
 
 public class AuthenticationService : IAuthenticationService
 {
@@ -17,12 +17,12 @@ public class AuthenticationService : IAuthenticationService
         _userRepository = userRepository;
     }
 
-    public Result<AuthenticationResult> Register(string firstName, string lastName, string email, string password)
+    public ErrorOr<AuthenticationResult> Register(string firstName, string lastName, string email, string password)
     {
         // user doesn't exist
         if (_userRepository.GetUserByEmail(email) != null)
         {
-            return Result.Fail<AuthenticationResult>(new[] { new DuplicateEmailError() });
+            return Errors.User.DuplicateEmail;
         }
 
         // create user & persist to DB
@@ -42,19 +42,19 @@ public class AuthenticationService : IAuthenticationService
         return new AuthenticationResult(user, token);
     }
 
-    public AuthenticationResult Login(string email, string password)
+    public ErrorOr<AuthenticationResult> Login(string email, string password)
     {
         // validate the user exists
         if (_userRepository.GetUserByEmail(email) is not User user)
         {
-            throw new Exception("User with given email already exists");
+            return Errors.Authentication.InvalidCredentials;
         }
 
-        // validate the password is correct
+        // validate the password is correct : can be a list of errors
 
         if (user.Password != password)
         {
-            throw new Exception("Invalid password");
+            return new[] { Errors.Authentication.InvalidCredentials };
         }
 
         // create JWT token

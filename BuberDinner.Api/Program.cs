@@ -1,5 +1,5 @@
-using BubberDinner.Application;
-using BuberDinner.Api.Errors;
+using BuberDinner.Api.Common.Errors;
+using BuberDinner.Application;
 using BuberDinner.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.OpenApi.Models;
@@ -11,7 +11,6 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<ProblemDetailsFactory, BuberDinnerProblemDetailsFactory>();
 
-// Dependency injection
 builder.Services
     .AddApplication()
     .AddAInfrastructure(builder.Configuration);

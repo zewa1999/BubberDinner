@@ -1,5 +1,5 @@
-﻿using BubberDinner.Application.Common.Interfaces.Authentication;
-using BubberDinner.Application.Common.Services;
+﻿using BuberDinner.Application.Common.Interfaces.Authentication;
+using BuberDinner.Application.Common.Services;
 using BuberDinner.Domain.Entities;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Logging;

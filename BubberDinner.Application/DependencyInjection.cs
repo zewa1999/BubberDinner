@@ -1,4 +1,4 @@
-﻿using BubberDinner.Application.Services.Authentication;
+﻿using BuberDinner.Application.Services.Authentication;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BubberDinner.Application;
+namespace BuberDinner.Application;
 
 public static class DependencyInjection
 {

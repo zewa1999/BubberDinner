@@ -1,0 +1,20 @@
+﻿using ErrorOr;
+
+namespace BuberDinner.Domain.Common.Errors;
+
+public static class Errors
+{
+    public static class User
+    {
+        public static Error DuplicateEmail => Error.Conflict(
+            code: "User.DuplicateEmail",
+            description: "Email is already in use");
+    }
+
+    public static class Authentication
+    {
+        public static Error InvalidCredentials => Error.Validation(
+            code: "Auth.InvalidCredentials",
+            description: "Invalid credentials");
+    }
+}
