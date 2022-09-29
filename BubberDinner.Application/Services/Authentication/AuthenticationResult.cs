@@ -1,8 +1,7 @@
-﻿namespace BubberDinner.Application.Services.Authentication;
+﻿using BuberDinner.Domain.Entities;
+
+namespace BubberDinner.Application.Services.Authentication;
 
 public record AuthenticationResult(
-    Guid Id,
-    string FirstName,
-    string LastName,
-    string Email,
+    User User,
     string Token);
