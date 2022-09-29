@@ -1,8 +1,33 @@
+using BubberDinner.Application;
+using BuberDinner.Infrastructure;
+using Microsoft.OpenApi.Models;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// Dependency injection
+builder.Services
+    .AddApplication()
+    .AddAInfrastructure(builder.Configuration);
+
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Version = "v1",
+        Title = "Buber Dinner API",
+        Description = "An ASP.NET Core Web API where I learned more about Clean Architecture," +
+        " CQRS, interesting design patterns and code",
+        Contact = new OpenApiContact
+        {
+            Name = "Andrei Costache",
+            Url = new Uri("https://www.linkedin.com/in/stelian-andrei-costache/")
+        }
+    });
+});
 
 var app = builder.Build();
 
