@@ -1,13 +1,11 @@
 using BubberDinner.Application;
 using BuberDinner.Api.Errors;
-using BuberDinner.Api.Filters;
 using BuberDinner.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-//builder.Services.AddControllers(opt => opt.Filters.Add<ErrorHandlingFilterAttribute>());
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -41,8 +39,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-//app.UseMiddleware<ErrorHandlingMiddleware>();
 
 app.UseExceptionHandler("/error");
 app.UseHttpsRedirection();
