@@ -1,4 +1,5 @@
-﻿using BuberDinner.Application.Services.Authentication;
+﻿using BuberDinner.Application.Services.Authentication.Commands;
+using BuberDinner.Application.Services.Authentication.Common;
 using BuberDinner.Contracts.Authentication;
 using BuberDinner.Domain.Common.Errors;
 using Microsoft.AspNetCore.Mvc;
@@ -9,18 +10,21 @@ namespace BuberDinner.Api.Controllers;
 [Produces("application/json")]
 public class AuthenticationController : ApiController
 {
-    private readonly IAuthenticationService _authenticationService;
+    private readonly IAuthenticationQueryService _authenticationQueryService;
+    private readonly IAuthenticationCommandService _authenticationCommandService;
 
-    public AuthenticationController(IAuthenticationService authenticationService)
+    public AuthenticationController(IAuthenticationQueryService authenticationService,
+        IAuthenticationCommandService authenticationCommandService)
     {
-        _authenticationService = authenticationService;
+        _authenticationQueryService = authenticationService;
+        _authenticationCommandService = authenticationCommandService;
     }
 
     [HttpPost]
     [Route("register")]
     public IActionResult Register(RegisterRequest request)
     {
-        var authResult = _authenticationService.Register(
+        var authResult = _authenticationCommandService.Register(
             request.FirstName,
             request.LastName,
             request.Email,
@@ -35,7 +39,7 @@ public class AuthenticationController : ApiController
     [Route("login")]
     public IActionResult Login(LoginRequest request)
     {
-        var authResult = _authenticationService.Login(
+        var authResult = _authenticationQueryService.Login(
             request.Email,
             request.Password);
 
