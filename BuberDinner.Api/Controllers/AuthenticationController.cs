@@ -1,7 +1,10 @@
-﻿using BuberDinner.Application.Services.Authentication.Commands;
-using BuberDinner.Application.Services.Authentication.Common;
+﻿using BuberDinner.Application.Authentication;
+using BuberDinner.Application.Authentication.Commands.Register;
+using BuberDinner.Application.Authentication.Queries;
 using BuberDinner.Contracts.Authentication;
 using BuberDinner.Domain.Common.Errors;
+using ErrorOr;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BuberDinner.Api.Controllers;
@@ -10,25 +13,21 @@ namespace BuberDinner.Api.Controllers;
 [Produces("application/json")]
 public class AuthenticationController : ApiController
 {
-    private readonly IAuthenticationQueryService _authenticationQueryService;
-    private readonly IAuthenticationCommandService _authenticationCommandService;
+    private readonly IMediator _mediator;
 
-    public AuthenticationController(IAuthenticationQueryService authenticationService,
-        IAuthenticationCommandService authenticationCommandService)
+    public AuthenticationController(IMediator mediator)
     {
-        _authenticationQueryService = authenticationService;
-        _authenticationCommandService = authenticationCommandService;
+        _mediator = mediator;
     }
 
     [HttpPost]
     [Route("register")]
-    public IActionResult Register(RegisterRequest request)
+    public async Task<IActionResult> Register(RegisterRequest request)
     {
-        var authResult = _authenticationCommandService.Register(
-            request.FirstName,
-            request.LastName,
-            request.Email,
+        var command = new RegisterCommand(request.FirstName, request.LastName, request.Email,
             request.Password);
+
+        ErrorOr<AuthenticationResult> authResult = await _mediator.Send(command);
 
         return authResult.Match(
             authResult => Ok(MapAuthResult(authResult)),
@@ -37,16 +36,11 @@ public class AuthenticationController : ApiController
 
     [HttpPost]
     [Route("login")]
-    public IActionResult Login(LoginRequest request)
+    public async Task<IActionResult> Login(LoginRequest request)
     {
-        var authResult = _authenticationQueryService.Login(
-            request.Email,
-            request.Password);
+        var query = new LoginQuery(request.Email, request.Password);
 
-        if (authResult.IsError && authResult.FirstError == Errors.Authentication.InvalidCredentials)
-        {
-            return Problem(statusCode: StatusCodes.Status401Unauthorized, title: authResult.FirstError.Description);
-        }
+        ErrorOr<AuthenticationResult> authResult = await _mediator.Send(query);
 
         return authResult.Match(
             authResult => Ok(MapAuthResult(authResult)),
