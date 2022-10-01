@@ -6,75 +6,74 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Options;
 using System.Diagnostics;
 
-namespace BuberDinner.Api.Common.Errors
+namespace BuberDinner.Api.Common.Errors;
+
+public class BuberDinnerProblemDetailsFactory : ProblemDetailsFactory
 {
-    public class BuberDinnerProblemDetailsFactory : ProblemDetailsFactory
+    private readonly ApiBehaviorOptions _options;
+
+    public BuberDinnerProblemDetailsFactory(IOptions<ApiBehaviorOptions> options)
     {
-        private readonly ApiBehaviorOptions _options;
+        _options = options?.Value ?? throw new ArgumentNullException(nameof(Options));
+    }
 
-        public BuberDinnerProblemDetailsFactory(IOptions<ApiBehaviorOptions> options)
+    public override ProblemDetails CreateProblemDetails(
+        HttpContext httpContext,
+        int? statusCode = null,
+        string? title = null,
+        string? type = null,
+        string? detail = null,
+        string? instance = null)
+    {
+        statusCode ??= 500;
+
+        var problemDetails = new ProblemDetails
         {
-            _options = options?.Value ?? throw new ArgumentNullException(nameof(Options));
+            Status = statusCode,
+            Title = title,
+            Type = type,
+            Detail = detail,
+            Instance = instance
+        };
+
+        ApplyProblemDetailsDefaults(httpContext, problemDetails, statusCode.Value);
+
+        return problemDetails;
+    }
+
+    public override ValidationProblemDetails CreateValidationProblemDetails(
+        HttpContext context,
+        ModelStateDictionary modelStateDictionary,
+        int? statusCode = null,
+        string? title = null,
+        string? type = null,
+        string? detail = null,
+        string? instance = null)
+    {
+        throw new NotImplementedException();
+    }
+
+    private void ApplyProblemDetailsDefaults(HttpContext httpContext, ProblemDetails problemDetails, int statusCode)
+    {
+        problemDetails.Status ??= statusCode;
+
+        if (_options.ClientErrorMapping.TryGetValue(statusCode, out var clientErrorData))
+        {
+            problemDetails.Title ??= clientErrorData.Title;
+            problemDetails.Type ??= clientErrorData.Link;
         }
 
-        public override ProblemDetails CreateProblemDetails(
-            HttpContext httpContext,
-            int? statusCode = null,
-            string? title = null,
-            string? type = null,
-            string? detail = null,
-            string? instance = null)
+        var traceId = Activity.Current?.Id ?? httpContext?.TraceIdentifier;
+        if (traceId != null)
         {
-            statusCode ??= 500;
-
-            var problemDetails = new ProblemDetails
-            {
-                Status = statusCode,
-                Title = title,
-                Type = type,
-                Detail = detail,
-                Instance = instance
-            };
-
-            ApplyProblemDetailsDefaults(httpContext, problemDetails, statusCode.Value);
-
-            return problemDetails;
+            problemDetails.Extensions["traceId"] = traceId;
         }
 
-        public override ValidationProblemDetails CreateValidationProblemDetails(
-            HttpContext context,
-            ModelStateDictionary modelStateDictionary,
-            int? statusCode = null,
-            string? title = null,
-            string? type = null,
-            string? detail = null,
-            string? instance = null)
+        var errors = httpContext?.Items[HttpContextItemKeys.Errors] as List<Error>;
+
+        if (errors != null)
         {
-            throw new NotImplementedException();
-        }
-
-        private void ApplyProblemDetailsDefaults(HttpContext httpContext, ProblemDetails problemDetails, int statusCode)
-        {
-            problemDetails.Status ??= statusCode;
-
-            if (_options.ClientErrorMapping.TryGetValue(statusCode, out var clientErrorData))
-            {
-                problemDetails.Title ??= clientErrorData.Title;
-                problemDetails.Type ??= clientErrorData.Link;
-            }
-
-            var traceId = Activity.Current?.Id ?? httpContext?.TraceIdentifier;
-            if (traceId != null)
-            {
-                problemDetails.Extensions["traceId"] = traceId;
-            }
-
-            var errors = httpContext?.Items[HttpContextItemKeys.Errors] as List<Error>;
-
-            if (errors != null)
-            {
-                problemDetails.Extensions.Add("errorCodes", errors.Select(e => e.Code));
-            }
+            problemDetails.Extensions.Add("errorCodes", errors.Select(e => e.Code));
         }
     }
 }
