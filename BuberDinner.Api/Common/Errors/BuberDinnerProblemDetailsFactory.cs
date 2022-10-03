@@ -50,7 +50,30 @@ public class BuberDinnerProblemDetailsFactory : ProblemDetailsFactory
         string? detail = null,
         string? instance = null)
     {
-        throw new NotImplementedException();
+        if (modelStateDictionary == null)
+        {
+            throw new ArgumentNullException(nameof(modelStateDictionary));
+        }
+
+        statusCode ??= 400;
+
+        var problemDetails = new ValidationProblemDetails(modelStateDictionary)
+        {
+            Status = statusCode,
+            Type = type,
+            Detail = detail,
+            Instance = instance,
+        };
+
+        if (title != null)
+        {
+            // For validation problem details, don't overwrite the default title with null.
+            problemDetails.Title = title;
+        }
+
+        ApplyProblemDetailsDefaults(context, problemDetails, statusCode.Value);
+        
+        return problemDetails;
     }
 
     private void ApplyProblemDetailsDefaults(HttpContext httpContext, ProblemDetails problemDetails, int statusCode)
@@ -69,9 +92,7 @@ public class BuberDinnerProblemDetailsFactory : ProblemDetailsFactory
             problemDetails.Extensions["traceId"] = traceId;
         }
 
-        var errors = httpContext?.Items[HttpContextItemKeys.Errors] as List<Error>;
-
-        if (errors != null)
+        if (httpContext?.Items[HttpContextItemKeys.Errors] is List<Error> errors)
         {
             problemDetails.Extensions.Add("errorCodes", errors.Select(e => e.Code));
         }

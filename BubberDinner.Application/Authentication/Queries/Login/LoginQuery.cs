@@ -1,7 +1,7 @@
 ﻿using ErrorOr;
 using MediatR;
 
-namespace BuberDinner.Application.Authentication.Queries;
+namespace BuberDinner.Application.Authentication.Queries.Login;
 
 public record LoginQuery(
     string Email,

@@ -1,12 +1,10 @@
-﻿using BuberDinner.Application.Authentication.Queries;
-using BuberDinner.Application.Common.Interfaces.Authentication;
+﻿using BuberDinner.Application.Common.Interfaces.Authentication;
 using BuberDinner.Application.Common.Interfaces.Persistence;
 using BuberDinner.Domain.Common.Errors;
-using BuberDinner.Domain.Entities;
 using ErrorOr;
 using MediatR;
 
-namespace BuberDinner.Application.Authentication.Commands.Register;
+namespace BuberDinner.Application.Authentication.Queries.Login;
 
 public class LoginQueryHandler : IRequestHandler<LoginQuery, ErrorOr<AuthenticationResult>>
 {
@@ -21,10 +19,10 @@ public class LoginQueryHandler : IRequestHandler<LoginQuery, ErrorOr<Authenticat
 
     public async Task<ErrorOr<AuthenticationResult>> Handle(LoginQuery query, CancellationToken cancellationToken)
     {
-        await Task.CompletevdTask;
+        await Task.CompletedTask;
 
         // validate the user exists
-        if (_userRepository.GetUserByEmail(query.Email) is not User user)
+        if (_userRepository.GetUserByEmail(query.Email) is not { } user)
         {
             return Errors.Authentication.InvalidCredentials;
         }
