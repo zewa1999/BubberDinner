@@ -4,14 +4,16 @@ using BuberDinner.Infrastructure;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
-
+{
 builder.Services.AddEndpointsApiExplorer();
+
 builder.Services.AddSwaggerGen();
 
 builder.Services
     .AddPresentation()
     .AddApplication()
     .AddAInfrastructure(builder.Configuration);
+}
 
 builder.Services.AddSwaggerGen(options =>
 {
@@ -30,7 +32,8 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 var app = builder.Build();
-
+{
+    
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -38,8 +41,11 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseExceptionHandler("/error");
+app.UseAuthentication();
+app.UseAuthorization();
 app.UseHttpsRedirection();
-
 app.MapControllers();
 
 app.Run();
+}
+
