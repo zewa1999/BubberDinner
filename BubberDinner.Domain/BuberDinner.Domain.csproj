@@ -10,4 +10,8 @@
     <PackageReference Include="ErrorOr" Version="1.0.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="MenuReview\ValueObjects\" />
+  </ItemGroup>
+
 </Project>
