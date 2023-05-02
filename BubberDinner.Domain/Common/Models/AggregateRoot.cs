@@ -3,8 +3,12 @@
 public abstract class AggregateRoot<TId> : Entity<TId>
     where TId : notnull
 {
-    protected AggregateRoot(TId id, DateTime createdDateTime, DateTime updatedDateTime)
-        : base(id, createdDateTime, updatedDateTime)
+    protected AggregateRoot()
+    {
+
+    }
+    protected AggregateRoot(TId id)
+        : base(id)
     {
     }
 }

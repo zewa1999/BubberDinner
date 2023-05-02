@@ -5,11 +5,16 @@ namespace BuberDinner.Domain.MenuAggregate.Entities;
 
 public sealed class MenuSection : Entity<MenuSectionId>
 {
+    public DateTime CreatedDateTime { get; }
+    public DateTime UpdatedDateTime { get; }
+
     public MenuSection(MenuSectionId id, string name, string description, DateTime createdDateTime, DateTime updatedDateTime)
-        : base(id, createdDateTime, updatedDateTime)
+        : base(id)
     {
         Name = name;
         Description = description;
+        CreatedDateTime = createdDateTime;
+        UpdatedDateTime = updatedDateTime;
     }
 
     private readonly List<MenuItem> _items = new();
@@ -27,4 +32,11 @@ public sealed class MenuSection : Entity<MenuSectionId>
             DateTime.UtcNow,
             DateTime.UtcNow);
     }
+
+#pragma warning disable CS8618
+    private MenuSection()
+    {
+
+    }
+#pragma warning restore CS8618
 }

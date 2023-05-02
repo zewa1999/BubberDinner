@@ -4,14 +4,17 @@ public abstract class Entity<TId> : IEquatable<Entity<TId>>
     where TId : notnull
 {
     public TId Id { get; protected set; }
-    public DateTime CreatedDateTime { get; }
-    public DateTime UpdatedDateTime { get; }
 
-    protected Entity(TId id, DateTime createdDateTime, DateTime updatedDateTime)
+#pragma warning disable CS8618
+    protected Entity()
+    {
+
+    }
+#pragma warning disable CS8618
+
+    protected Entity(TId id)
     {
         Id = id;
-        CreatedDateTime = createdDateTime;
-        UpdatedDateTime = updatedDateTime;
     }
 
     public override bool Equals(object? obj)

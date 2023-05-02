@@ -24,6 +24,8 @@ public sealed class Dinner : AggregateRoot<DinnerId>
     public MenuId MenuId { get; }
     public Uri ImageUrl { get; }
     public Location Location { get; }
+    public DateTime CreatedDateTime { get; }
+    public DateTime UpdatedDateTime { get; }
 
     public IReadOnlyList<Reservation> Reservations => _reservation.AsReadOnly();
 
@@ -31,7 +33,7 @@ public sealed class Dinner : AggregateRoot<DinnerId>
         string name, string description, DateTime startDateTime, DateTime endDateTime, DateTime startedDateTime, DateTime endedDateTime,
         DinnerStatus dinnerStatus, bool isPublic, int maxGuests, Price price, HostId hostId, MenuId menuId, Uri imageUrl, Location location,
         DateTime createdDateTime, DateTime updatedDateTime)
-        : base(id, createdDateTime, updatedDateTime)
+        : base(id)
     {
         Name = name;
         Description = description;
@@ -47,6 +49,9 @@ public sealed class Dinner : AggregateRoot<DinnerId>
         MenuId = menuId;
         ImageUrl = imageUrl;
         Location = location;
+        CreatedDateTime = createdDateTime;
+        UpdatedDateTime = updatedDateTime;
+
     }
 
     public static Dinner Create(

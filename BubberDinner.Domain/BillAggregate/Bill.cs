@@ -12,14 +12,18 @@ public sealed class Bill : AggregateRoot<BillId>
     public GuestId GuestId { get; set; }
     public HostId HostId { get; set; }
     public Price Price { get; set; }
+    public DateTime CreatedDateTime { get; }
+    public DateTime UpdatedDateTime { get; }
 
     public Bill(BillId id, DinnerId dinnerId, GuestId guestId, HostId hostId, Price price, DateTime createdDateTime, DateTime updatedDateTime)
-        : base(id, createdDateTime, updatedDateTime)
+        : base(id)
     {
         DinnerId = dinnerId;
         GuestId = guestId;
         HostId = hostId;
         Price = price;
+        CreatedDateTime = createdDateTime;
+        UpdatedDateTime = updatedDateTime;
     }
 
     public static Bill Create(

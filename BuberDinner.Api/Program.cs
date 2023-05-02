@@ -9,7 +9,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services
     .AddPresentation()
     .AddApplication()
-    .AddAInfrastructure(builder.Configuration);
+    .AddInfrastructure(builder.Configuration);
 }
 
 var app = builder.Build();

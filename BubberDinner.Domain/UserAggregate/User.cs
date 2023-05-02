@@ -9,14 +9,18 @@ public sealed class User : AggregateRoot<UserId>
     public string LastName { get; }
     public string Email { get; }
     public string Password { get; }
+    public DateTime CreatedDateTime { get; }
+    public DateTime UpdatedDateTime { get; }
 
     public User(UserId id, string firstName, string lastName, string email, string password, DateTime createdDateTime, DateTime updatedDateTime)
-        : base(id, createdDateTime, updatedDateTime)
+        : base(id)
     {
         FirstName = firstName;
         LastName = lastName;
         Email = email;
         Password = password;
+        CreatedDateTime = createdDateTime;
+        UpdatedDateTime = updatedDateTime;
     }
 
     public static User Create(

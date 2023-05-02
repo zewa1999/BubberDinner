@@ -16,19 +16,23 @@ public sealed class Host : AggregateRoot<HostId>
     private readonly List<DinnerId> _dinnerIds = new();
     public AverageRating averageRating { get; }
     public UserId UserId { get; set; }
+    public DateTime CreatedDateTime { get; }
+    public DateTime UpdatedDateTime { get; }
 
     public IReadOnlyList<MenuId> Menus => _menuIds.AsReadOnly();
     public IReadOnlyList<DinnerId> Dinners => _dinnerIds.AsReadOnly();
 
     public Host(HostId id, string firstName, string lastName, Uri profileImage, AverageRating averageRating, UserId userId,
         DateTime createdDateTime, DateTime updatedDateTime)
-        : base(id, createdDateTime, updatedDateTime)
+        : base(id)
     {
         FirstName = firstName;
         LastName = lastName;
         ProfileImage = profileImage;
         this.averageRating = averageRating;
         UserId = userId;
+        CreatedDateTime = createdDateTime;
+        UpdatedDateTime = updatedDateTime;
     }
 
     public static Host Create(

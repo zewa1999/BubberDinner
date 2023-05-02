@@ -22,6 +22,8 @@ public sealed class Guest : AggregateRoot<GuestId>
     public Uri ProfileImage { get; }
     public AverageRating AverageRating { get; }
     public UserId UserId { get; }
+    public DateTime CreatedDateTime { get; }
+    public DateTime UpdatedDateTime { get; }
 
     public IReadOnlyList<DinnerId> UpcomingDinnerIds => _upcomingDinnerIds.AsReadOnly();
     public IReadOnlyList<DinnerId> PastDinnerIds => _pastDinnerIds.AsReadOnly();
@@ -31,13 +33,15 @@ public sealed class Guest : AggregateRoot<GuestId>
     public IReadOnlyList<Rating> RatingsIds => _ratings.AsReadOnly();
 
     public Guest(GuestId id, string firstName, string lastName, Uri profileImage, AverageRating averageRating, UserId userId, DateTime createdDateTime, DateTime updatedDateTime)
-        : base(id, createdDateTime, updatedDateTime)
+        : base(id)
     {
         FirstName = firstName;
         LastName = lastName;
         ProfileImage = profileImage;
         AverageRating = averageRating;
         UserId = userId;
+        CreatedDateTime = createdDateTime;
+        UpdatedDateTime = updatedDateTime;
     }
 
     public static Guest Create(

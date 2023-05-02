@@ -10,13 +10,17 @@ public sealed class Rating : Entity<RatingId>
     public HostId HostId { get; }
     public DinnerId DinnerId { get; }
     public int RatingValue { get; set; }
+    public DateTime CreatedDateTime { get; }
+    public DateTime UpdatedDateTime { get; }
 
     public Rating(RatingId id, HostId hostId, DinnerId dinnerId, int ratingValue, DateTime createdDateTime, DateTime updatedDateTime)
-        : base(id, createdDateTime, updatedDateTime)
+        : base(id)
     {
         HostId = hostId;
         DinnerId = dinnerId;
         RatingValue = ratingValue;
+        CreatedDateTime = createdDateTime;
+        UpdatedDateTime = updatedDateTime;
     }
 
     public static Rating Create(

@@ -16,9 +16,11 @@ public sealed class MenuReview : AggregateRoot<MenuReviewId>
     public MenuId MenuId { get; }
     public GuestId GuestId { get; }
     public DinnerId DinnerId { get; }
+    public DateTime CreatedDateTime { get; }
+    public DateTime UpdatedDateTime { get; }
 
     public MenuReview(MenuReviewId id, string comment, Rating rating, HostId hostId, MenuId menuId, GuestId guestId,
-        DinnerId dinnerId, DateTime createdDateTime, DateTime updatedDateTime) : base(id, createdDateTime, updatedDateTime)
+        DinnerId dinnerId, DateTime createdDateTime, DateTime updatedDateTime) : base(id)
     {
         Comment = comment;
         Rating = rating;
@@ -26,6 +28,8 @@ public sealed class MenuReview : AggregateRoot<MenuReviewId>
         MenuId = menuId;
         GuestId = guestId;
         DinnerId = dinnerId;
+        CreatedDateTime = createdDateTime;
+        UpdatedDateTime = updatedDateTime;
     }
 
     public static MenuReview Create(
